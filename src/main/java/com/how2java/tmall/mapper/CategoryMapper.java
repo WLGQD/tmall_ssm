@@ -6,14 +6,13 @@ import com.how2java.tmall.util.Page;
 import java.util.List;
  
 public interface CategoryMapper {
-    public List<Category> list(Page page);
+    List<Category> list();
 
-    public int total();
-    public void add(Category c);
+    void add(Category category);
 
-    public void delete(int id);
+    void delete(int id);
 
     Category get(int id);
 
-    void update(Category c);
+    void update(Category category);
 }
