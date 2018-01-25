@@ -4,10 +4,11 @@
 
 # IntelliJ project files
 .idea
-#*.iml
+*.iml
 
 out
 gen
 target
 
 /src/main/webapp/img/
+
