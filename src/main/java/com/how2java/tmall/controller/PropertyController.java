@@ -45,4 +45,32 @@ public class PropertyController {
         model.addAttribute("page",page);
         return "admin/listProperty";
     }
+
+
+    @RequestMapping("admin_property_add")
+    public String add(Property model) {
+       propertyService.add(model);
+        return "redirect:admin_property_list?cid="+model.getCid();
+    }
+
+    @RequestMapping("admin_property_edit")
+    public String edit(Model model, int id) {
+        Property property = propertyService.get(id);
+        Category category = categoryService.get(property.getCid());
+        property.setCategory(category);
+        model.addAttribute("p",property);
+        return "admin/editProperty";
+    }
+
+    @RequestMapping("admin_property_update")
+    public String update(Property p) {
+        propertyService.update(p);
+        return "redirect:admin_property_list?cid="+p.getCid();
+    }
+    @RequestMapping("admin_property_delete")
+    public String delete(int id) {
+        Property p = propertyService.get(id);
+        propertyService.delete(id);
+        return "redirect:admin_property_list?cid="+p.getCid();
+    }
 }
