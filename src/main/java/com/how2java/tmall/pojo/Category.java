@@ -1,7 +1,13 @@
 package com.how2java.tmall.pojo;
 
 import java.util.List;
-
+/**
+ * Created with IntelliJ IDEA.
+ * Description: 添加 字段 前台首页竖状导航使用
+ * User: XKK
+ * Date: 2018-01-29
+ * Time: 13:43
+ */
 public class Category {
     private Integer id;
 
