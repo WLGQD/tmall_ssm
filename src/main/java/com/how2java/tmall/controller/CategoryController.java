@@ -38,6 +38,15 @@ public class CategoryController {
         return "admin/listCategory";
     }
 
+   
+    /**  
+     *    
+     *   
+     * @author XKK  
+     * @date 2018/1/30 0:22  
+     * @param [c, session, uploadedImageFile]  
+     * @return java.lang.String  
+     */ 
     @RequestMapping("admin_category_add")
     public String add(Category c, HttpSession session, UploadedImageFile uploadedImageFile) throws IOException {
         System.out.println(c.getId());

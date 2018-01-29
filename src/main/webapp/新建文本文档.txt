@@ -1,0 +1,19 @@
+#if (${PACKAGE_NAME} && ${PACKAGE_NAME} != "")package ${PACKAGE_NAME};#end
+/**
+* @author  ${USER}
+* @create ${YEAR}-${MONTH}-${DAY} ${TIME}
+* @desc      ${DESCRIPTION}
+**/
+public class ${NAME} {
+}
+
+
+
+*  
+ *    
+ *   
+ * @author XKK  
+ * @date $date$ $time$  
+ * @param $params$  
+ * @return $returns$  
+ */ 
