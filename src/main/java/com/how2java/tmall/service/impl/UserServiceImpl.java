@@ -49,4 +49,12 @@ public class UserServiceImpl implements UserService{
 
         return userMapper.selectByExample(example);
     }
+
+    @Override
+    public boolean isExist(String name) {
+        UserExample example = new UserExample();
+        example.createCriteria().andNameEqualTo(name);
+        List list =  userMapper.selectByExample(example);
+        return list.size() ==0?false:true;
+    }
 }
