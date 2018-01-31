@@ -2368,14 +2368,14 @@ table th[class*="col-"] {
 .table > thead > tr.success > th,
 .table > tbody > tr.success > th,
 .table > tfoot > tr.success > th {
-  background-color: #f03535;/* #dff0d8*/
+  background-color: #dff0d8;
 }
 .table-hover > tbody > tr > td.success:hover,
 .table-hover > tbody > tr > th.success:hover,
 .table-hover > tbody > tr.success:hover > td,
 .table-hover > tbody > tr:hover > .success,
 .table-hover > tbody > tr.success:hover > th {
-  background-color: #f03535;/* #d0e9c6*/
+  background-color: #d0e9c6;
 }
 .table > thead > tr > td.info,
 .table > tbody > tr > td.info,

@@ -16,7 +16,7 @@ public interface ProductService {
     void delete(int id);
     void update(Product c);
     Product get(int id);
-    List list(int cid);
+    List<Product> list(int cid);
 
     void setFirstProductImage(Product p);
 
@@ -28,4 +28,17 @@ public interface ProductService {
     void fill(List<Category> categorys);
     void fill(Category category);
     void fillByRow(List<Category> categorys);
+
+
+    /**
+     *产品设置销量和评价数量
+     * @param p
+     */
+    void setSaleAndReviewNumber(Product p);
+
+    /**
+     * 产品设置销量和评价数量
+     * @param ps
+     */
+    void setSaleAndReviewNumber(List<Product> ps);
 }

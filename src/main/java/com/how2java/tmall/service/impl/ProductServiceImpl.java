@@ -1,13 +1,8 @@
 package com.how2java.tmall.service.impl;
 
 import com.how2java.tmall.mapper.ProductMapper;
-import com.how2java.tmall.pojo.Category;
-import com.how2java.tmall.pojo.Product;
-import com.how2java.tmall.pojo.ProductExample;
-import com.how2java.tmall.pojo.ProductImage;
-import com.how2java.tmall.service.CategoryService;
-import com.how2java.tmall.service.ProductImageService;
-import com.how2java.tmall.service.ProductService;
+import com.how2java.tmall.pojo.*;
+import com.how2java.tmall.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +16,12 @@ public class ProductServiceImpl implements ProductService {
     CategoryService categoryService;
     @Autowired
     ProductImageService productImageService;
+
+    @Autowired
+    OrderItemService orderItemService;
+
+    @Autowired
+    ReviewService reviewService;
 
     @Override
     public void add(Product p) {
@@ -56,11 +57,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List list(int cid) {
+    public List<Product> list(int cid) {
         ProductExample example = new ProductExample();
         example.createCriteria().andCidEqualTo(cid);
         example.setOrderByClause("id desc");
-        List result = productMapper.selectByExample(example);
+        List<Product> result = productMapper.selectByExample(example);
         setCategory(result);
         setFirstProductImage(result);
         return result;
@@ -109,6 +110,21 @@ public class ProductServiceImpl implements ProductService {
                 productsByRow.add(productsOfEachRow);
             }
             c.setProductsByRow(productsByRow);
+        }
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(Product p) {
+        int totalSaleCount = orderItemService.getSaleCount(p.getId());
+        int totalReviewCount = reviewService.getCount(p.getId());
+        p.setSaleCount(totalSaleCount);
+        p.setReviewCount(totalReviewCount);
+    }
+
+    @Override
+    public void setSaleAndReviewNumber(List<Product> ps) {
+        for (Product p:ps) {
+            setSaleAndReviewNumber(p);
         }
     }
 
