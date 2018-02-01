@@ -1,5 +1,6 @@
 package com.how2java.tmall.controller;
 
+import com.github.pagehelper.PageHelper;
 import com.how2java.tmall.comparator.*;
 import com.how2java.tmall.pojo.*;
 import com.how2java.tmall.service.*;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -161,7 +163,55 @@ public class ForeController {
 
     @RequestMapping("foresearch")
     public String search( String keyword,Model model){
-
+        PageHelper.offsetPage(0,20);
+        List<Product> ps= productService.search(keyword);
+        productService.setSaleAndReviewNumber(ps);
+        model.addAttribute("ps",ps);
         return "fore/searchResult";
+    }
+
+
+    @RequestMapping("forebuyone")
+    public String buyone( int pid,int num,HttpSession session){
+        User user = (User) session.getAttribute("user");
+        Product p = productService.get(pid);
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        // orderitem表中有当前用户添加的产品 则更新 没有则新建 OrderItem
+        boolean found = false; //是否已有
+        int oiid = 0; //orderItem 条目id
+        //先 遍历查询
+        for (OrderItem oi: ois) {
+            if(oi.getProduct().getId().intValue()==p.getId().intValue()){
+                oi.setNumber(oi.getNumber()+num);
+                orderItemService.update(oi);
+                found = true;
+                oiid = oi.getId();
+                break;
+            }
+        }
+        if (!found){
+            OrderItem oi = new OrderItem();
+            oi.setUid(user.getId());
+            oi.setNumber(num);
+            oi.setPid(pid);
+            orderItemService.add(oi);
+            oiid = oi.getId();
+        }
+        return "redirect:forebuy?oiid="+oiid;
+    }
+
+    @RequestMapping("forebuy")
+    public String buy(Model model,String[] oiid,HttpSession session){
+        List<OrderItem> ois = new ArrayList<>();
+        float total = 0;
+        for (String strid:oiid) {
+            int id = Integer.parseInt(strid);
+            OrderItem oi = orderItemService.get(id);
+            total += oi.getProduct().getPromotePrice()*oi.getNumber();
+            ois.add(oi);
+        }
+        session.setAttribute("ois", ois);
+        model.addAttribute("total", total);
+        return "fore/buy";
     }
 }

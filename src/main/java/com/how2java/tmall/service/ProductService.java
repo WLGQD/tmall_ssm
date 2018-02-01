@@ -41,4 +41,11 @@ public interface ProductService {
      * @param ps
      */
     void setSaleAndReviewNumber(List<Product> ps);
+
+    /**
+     * 搜索
+     * @param keyword
+     * @return
+     */
+    List<Product> search(String keyword);
 }

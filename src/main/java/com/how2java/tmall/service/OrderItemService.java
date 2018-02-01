@@ -30,4 +30,11 @@ public interface OrderItemService {
      * @return
      */
     int getSaleCount(int pid);
+
+    /**
+     * 查询用户的所有未生成订单的 订单条目
+     * @param uid
+     * @return
+     */
+    List<OrderItem> listByUser(int uid);
 }
