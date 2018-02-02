@@ -65,6 +65,21 @@ public class ForeController {
         userService.add(user);
         return "redirect:registerSuccessPage";
     }
+    @RequestMapping("forelogin")
+  //  public String login(@RequestParam("name") String name, @RequestParam("password") String password, Model model, HttpSession session) {
+    public String login(User user, Model model, HttpSession session) {
+  /*      name = HtmlUtils.htmlEscape(name);
+        User user = userService.get(name,password);*/
+
+        User user2 = userService.get(user.getName(),user.getPassword());
+        if(null==user2){
+            model.addAttribute("msg", "账号密码错误");
+            return "fore/login";
+        }
+        session.setAttribute("user", user2);
+        return "redirect:forehome";
+    }
+
 
 
     @RequestMapping("forelogout")
@@ -213,5 +228,44 @@ public class ForeController {
         session.setAttribute("ois", ois);
         model.addAttribute("total", total);
         return "fore/buy";
+    }
+
+
+
+    @RequestMapping("foreaddCart")
+    @ResponseBody
+    public String addCart(int pid,int num,HttpSession session, Model model){
+        User user = (User) session.getAttribute("user");
+        Product p = productService.get(pid);
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        // orderitem表中有当前用户添加的产品 则更新 没有则新建 OrderItem
+        boolean found = false; //是否已有
+
+        //先 遍历查询
+        for (OrderItem oi: ois) {
+            if(oi.getProduct().getId().intValue()==p.getId().intValue()){
+                oi.setNumber(oi.getNumber()+num);
+                orderItemService.update(oi);
+                found = true;
+                break;
+            }
+        }
+        if (!found){
+            OrderItem oi = new OrderItem();
+            oi.setUid(user.getId());
+            oi.setNumber(num);
+            oi.setPid(pid);
+            orderItemService.add(oi);
+
+        }
+        return "success";
+    }
+
+    @RequestMapping("forecart")
+    public String cart(HttpSession session, Model model){
+        User user =(User)  session.getAttribute("user");
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        model.addAttribute("ois", ois);
+        return "fore/cart";
     }
 }
