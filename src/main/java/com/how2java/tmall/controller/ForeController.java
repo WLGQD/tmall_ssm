@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.how2java.tmall.comparator.*;
 import com.how2java.tmall.pojo.*;
 import com.how2java.tmall.service.*;
+import org.apache.commons.lang.math.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,8 +14,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -215,6 +218,13 @@ public class ForeController {
         return "redirect:forebuy?oiid="+oiid;
     }
 
+    /**
+     * 购物车结算 按钮
+     * @param model
+     * @param oiid
+     * @param session
+     * @return
+     */
     @RequestMapping("forebuy")
     public String buy(Model model,String[] oiid,HttpSession session){
         List<OrderItem> ois = new ArrayList<>();
@@ -227,7 +237,7 @@ public class ForeController {
         }
         session.setAttribute("ois", ois);
         model.addAttribute("total", total);
-        return "fore/buy";
+        return "fore/buy";  //转到提交订单页面
     }
 
 
@@ -268,4 +278,105 @@ public class ForeController {
         model.addAttribute("ois", ois);
         return "fore/cart";
     }
+
+    /**
+     * 修改购物车订单条目 产品数量
+     * @param session
+     * @param pid
+     * @param num
+     * @return
+     */
+    @RequestMapping("forechangeOrderItem")
+    @ResponseBody
+    public String changeOrderItem(HttpSession session, int pid,int num){
+        User user =(User)  session.getAttribute("user");
+        if(null==user)
+            return "fail";
+        List<OrderItem> ois = orderItemService.listByUser(user.getId());
+        for (OrderItem oi:ois) {
+            Product s = oi.getProduct();
+            if (s.getId() == pid){
+                oi.setNumber(num);
+                orderItemService.update(oi);
+                break;
+            }
+        }
+        return "success";
+    }
+
+    /**
+     * 删除购物车订单条目
+     * @param session
+     * @param model
+     * @param oiid
+     * @return
+     */
+    @RequestMapping("foredeleteOrderItem")
+    @ResponseBody
+    public String deleteOrderItem(Model model,HttpSession session,int oiid){
+        User user =(User)  session.getAttribute("user");
+        if(null==user)
+            return "fail";
+        orderItemService.delete(oiid);
+        return "success";
+    }
+
+
+    /**
+     * 提交订单 按钮
+     * @param model
+     * @param order
+     * @param session
+     * @return
+     */
+    @RequestMapping("forecreateOrder")
+    public String createOrder (Model model,Order order,HttpSession session){
+        User user =(User)  session.getAttribute("user");
+        String orderCode = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date()) + RandomUtils.nextInt(10000);
+        order.setOrderCode(orderCode);
+        order.setCreateDate(new Date());
+        order.setUid(user.getId());
+        order.setStatus(OrderService.waitPay);
+        List<OrderItem> ois= (List<OrderItem>)  session.getAttribute("ois");
+        float total =orderService.add(order,ois);
+        return "redirect:forealipay?oid="+order.getId() +"&total="+total;
+    }
+
+
+    /**
+     * 确认支付按钮
+     * @param oid
+     * @param total
+     * @param model
+     * @return
+     */
+    @RequestMapping("forepayed")
+    public String payed(int oid, float total, Model model) {
+        Order order = orderService.get(oid);
+        order.setStatus(OrderService.waitDelivery);
+        order.setPayDate(new Date());
+        orderService.update(order);
+        model.addAttribute("o", order);
+        return "fore/payed";
+    }
+
+
+    /**
+     * 我的订单
+     * @param session
+     * @param model
+     * @return
+     */
+    @RequestMapping("forebought")
+    public String bought(Model model,HttpSession session) {
+        User user =(User)  session.getAttribute("user");
+        List<Order> os= orderService.list(user.getId(),OrderService.delete);
+
+        orderItemService.fill(os);
+
+        model.addAttribute("os", os);
+
+        return "fore/bought";
+    }
+
 }

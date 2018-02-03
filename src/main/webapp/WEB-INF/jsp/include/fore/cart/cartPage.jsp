@@ -197,25 +197,21 @@ function syncPrice(pid,num,price){
 	
 	var page = "forechangeOrderItem";
 	$.post(
-		    page,
-		    {"pid":pid,"number":num},
-		    function(result){
-				if("success"!=result){
-					location.href="loginPage";
-				}
-		    }
-		);
+        page,
+        {"pid":pid,"number":num},
+        function(result){
+            if("success"!=result){
+                location.href="loginPage";
+            }
+        }
+    );
 
 }
 </script>	
 
 <title>购物车</title>
 <div class="cartDiv">
-	<div class="cartTitle pull-right">
-		<span>已选商品  (不含运费)</span>
-		<span class="cartTitlePrice">￥0.00</span>
-		<button class="createOrderButton" disabled="disabled">结 算</button>
-	</div>
+
 	
 	
 	<div class="cartProductList">

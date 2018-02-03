@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: Administrator
-  Date: 2018/1/30
-  Time: 16:40
+  Date: 2018/2/3
+  Time: 15:37
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -10,5 +10,5 @@
 
 <%@include file="../include/fore/header.jsp"%>
 <%@include file="../include/fore/top.jsp"%>
-<%@include file="../include/fore/cart/alipayPage.jsp"%>
+<%@include file="../include/fore/cart/payedPage.jsp"%>
 <%@include file="../include/fore/footer.jsp"%>
