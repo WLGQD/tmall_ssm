@@ -36,5 +36,5 @@ public interface OrderService {
      */
     float add(Order c,List<OrderItem> ois);
 
-    List<Order> list(Integer id, String delete);
+    List list(int uid, String excludedStatus);
 }
